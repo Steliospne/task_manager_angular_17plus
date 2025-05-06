@@ -1,13 +1,22 @@
-import { type ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ChangeDetectorRef } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TaskItemComponent } from './task-item.component';
 import { Task } from '../../../../shared/models/task.model';
 import { jest } from '@jest/globals';
+import { RouterModule } from '@angular/router';
+import { TASKS_ROUTES } from '../../tasks.routes';
 
 describe('TaskItemComponent', () => {
   let component: TaskItemComponent;
   let fixture: ComponentFixture<TaskItemComponent>;
+
+  const updateInputs = () => {
+    const cdr = fixture.debugElement.injector.get(ChangeDetectorRef);
+    cdr.markForCheck();
+    fixture.detectChanges();
+  };
 
   const mockTask: Task = {
     id: '1',
@@ -20,7 +29,7 @@ describe('TaskItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaskItemComponent, RouterTestingModule],
+      imports: [TaskItemComponent, RouterModule.forRoot(TASKS_ROUTES)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TaskItemComponent);
@@ -75,31 +84,28 @@ describe('TaskItemComponent', () => {
   });
 
   it('should apply completed class when task is completed', () => {
-    // Update the task to be completed
     component.task = { ...mockTask, completed: true };
-    fixture.detectChanges();
-
+    updateInputs();
     const taskItem = fixture.debugElement.query(
       By.css('.task-item')
     ).nativeElement;
-    expect(taskItem).toContain('completed');
+
+    expect(taskItem.classList.contains('completed')).toBeTruthy();
   });
 
   it('should hide description when compact mode is enabled', () => {
-    // First check description is visible by default
     let descriptionElement = fixture.debugElement.query(
       By.css('.task-description')
     );
     expect(descriptionElement).toBeTruthy();
 
-    // Enable compact mode
     component.compact = true;
-    fixture.detectChanges();
+    updateInputs();
 
-    // Check description is now hidden
     descriptionElement = fixture.debugElement.query(
       By.css('.task-description')
-    );
-    expect(descriptionElement).toBeFalsy();
+    )?.nativeElement;
+
+    expect(descriptionElement).toBeUndefined();
   });
 });

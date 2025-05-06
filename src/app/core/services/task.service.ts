@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { type Observable, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { Task } from '../../shared/models/task.model';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,7 @@ export class TaskService {
     if (!localStorage.getItem(this.localStorageKey)) {
       const sampleTasks: Task[] = [
         {
-          id: uuidv4(),
+          id: uuid(),
           title: 'Learn Angular Standalone Components',
           description: 'Study the new standalone components in Angular',
           completed: true,
@@ -23,7 +23,7 @@ export class TaskService {
           createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
         },
         {
-          id: uuidv4(),
+          id: uuid(),
           title: 'Implement NgRx Store',
           description: 'Add state management to the application',
           completed: false,
@@ -31,7 +31,7 @@ export class TaskService {
           createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
         },
         {
-          id: uuidv4(),
+          id: uuid(),
           title: 'Write Unit Tests',
           description: 'Create comprehensive tests for components',
           completed: false,
@@ -59,7 +59,7 @@ export class TaskService {
   addTask(task: Omit<Task, 'id' | 'createdAt'>): Observable<Task> {
     const newTask: Task = {
       ...task,
-      id: uuidv4(),
+      id: uuid(),
       createdAt: new Date(),
     };
 
